@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Victor Pardinho</title>
+<meta name="description" content="Victor Pardinho — Brazilian artist, researcher and innovation manager working across tridimensional content, spatial design and immersive technologies.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;500;700;900&family=Space+Grotesk:wght@400;500;600&family=Space+Mono:wght@400;700&family=Anton&family=Permanent+Marker&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08070c;
+    --bg2:#0d0b16;
+    --ink:#f4efe4;
+    --muted:#8f8b9c;
+    --pink:#008cff;
+    --blue:#4d6bff;
+    --purple:#a855f7;
+    --card-bg:#111018;
+    --border:rgba(244,239,228,0.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Space Grotesk',sans-serif;
+    overflow-x:hidden;
+    cursor:default;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--pink);color:#08070c;}
+
+  .grain{
+    position:fixed;inset:0;z-index:2;pointer-events:none;
+    opacity:.14;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .scanlines{
+    position:fixed;inset:0;z-index:3;pointer-events:none;
+    opacity:.2;
+    background:repeating-linear-gradient(to bottom,rgba(255,255,255,.06) 0px,rgba(255,255,255,.06) 1px,transparent 1px,transparent 3px);
+    mix-blend-mode:overlay;
+  }
+
+  .flash{
+    position:fixed;inset:0;z-index:4;pointer-events:none;
+    background:var(--pink);opacity:0;
+  }
+  .flash.hit{animation:flashHit .12s steps(2,end);}
+  @keyframes flashHit{0%{opacity:0}30%{opacity:.06}60%{opacity:0}100%{opacity:.03}}
+
+  .aura{
+    position:fixed;top:0;left:0;width:640px;height:640px;
+    border-radius:50%;pointer-events:none;z-index:0;
+    background:radial-gradient(circle,rgba(0,140,255,.16),rgba(77,107,255,.10) 45%,transparent 72%);
+    filter:blur(10px);
+    transform:translate(-50%,-50%);
+    transition:opacity .4s ease;
+    will-change:transform;
+  }
+
+  .bg-grid{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(0,140,255,.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,140,255,.07) 1px, transparent 1px);
+    background-size:64px 64px;
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 75%);
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 75%);
+  }
+  .bg-grid-2{
+    position:fixed;top:-10%;left:-10%;width:120%;height:140%;z-index:0;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,63,164,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,63,164,.05) 1px, transparent 1px);
+    background-size:97px 97px;
+    transform:rotate(-7deg);
+    opacity:.7;
+  }
+  .bg-dots{
+    position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:radial-gradient(rgba(244,239,228,.06) 1px, transparent 1.4px);
+    background-size:22px 22px;
+  }
+  .bg-hazard{
+    position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.05;
+    background-image:repeating-linear-gradient(45deg, var(--pink) 0, var(--pink) 2px, transparent 2px, transparent 26px);
+  }
+
+  .glitch-bar{
+    position:fixed;left:0;width:100%;height:3px;z-index:6;pointer-events:none;opacity:0;
+    mix-blend-mode:screen;
+  }
+  .glitch-bar.on{animation:barFlash .3s steps(4,end);}
+  @keyframes barFlash{
+    0%{opacity:0;transform:translateX(0) scaleY(1)}
+    25%{opacity:.9;transform:translateX(-18px) scaleY(3)}
+    55%{opacity:.7;transform:translateX(14px) scaleY(1)}
+    80%{opacity:.5;transform:translateX(-6px) scaleY(2)}
+    100%{opacity:0;transform:translateX(0) scaleY(1)}
+  }
+
+  .blob{
+    position:absolute;border-radius:50%;filter:blur(90px);opacity:.35;z-index:0;pointer-events:none;
+    animation:blobDrift 22s ease-in-out infinite;
+  }
+  .blob-1{width:46vw;height:46vw;background:var(--pink);top:-10vw;left:-14vw;animation-duration:26s;}
+  .blob-2{width:38vw;height:38vw;background:var(--blue);top:70vh;right:-12vw;animation-duration:19s;animation-delay:-4s;}
+  .blob-3{width:34vw;height:34vw;background:var(--purple);top:180vh;left:20vw;animation-duration:24s;animation-delay:-9s;}
+  .blob-4{width:40vw;height:40vw;background:var(--blue);top:300vh;right:-10vw;animation-duration:21s;animation-delay:-13s;}
+  .blob-5{width:36vw;height:36vw;background:var(--pink);top:420vh;left:-10vw;animation-duration:28s;animation-delay:-6s;}
+  @keyframes blobDrift{
+    0%,100%{transform:translate(0,0) scale(1);}
+    33%{transform:translate(4vw,3vh) scale(1.12);}
+    66%{transform:translate(-3vw,-2vh) scale(.92);}
+  }
+
+  header.hero{
+    position:relative;z-index:20;
+    min-height:48vh;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;
+    padding:5rem 1.5rem 1rem;
+    overflow:visible;
+    pointer-events:none;
+  }
+  .kicker{
+    position:relative;z-index:1;
+    font-family:'Space Mono',monospace;
+    font-size:.72rem;
+    letter-spacing:.25em;
+    text-transform:uppercase;
+    color:var(--pink);
+    margin-bottom:1.4rem;
+  }
+  .kicker.burst{animation:kickerJitter .5s steps(6,end);}
+  @keyframes kickerJitter{
+    0%,100%{transform:translate(0,0)}
+    20%{transform:translate(-3px,1px)}
+    40%{transform:translate(3px,-1px)}
+    60%{transform:translate(-2px,0)}
+    80%{transform:translate(2px,1px)}
+  }
+  h1.glitch{
+    position:relative;z-index:1;
+    font-family:'Anton',sans-serif;
+    font-weight:400;
+    font-size:clamp(3.2rem,12vw,10.5rem);
+    line-height:.8;
+    letter-spacing:.01em;
+    text-transform:uppercase;
+    -webkit-text-stroke:2px rgba(244,239,228,.28);
+    transform:skew(-4deg,-1.5deg) scaleY(1.06);
+    filter:url(#distress) contrast(1.15);
+  }
+  h1.glitch .word{display:inline-block;}
+  h1.glitch .word-victor{color:var(--pink);}
+  h1.glitch .word-pardinho{color:#0a3f78;}
+  h1.glitch .lw{display:inline-block;animation:letterWobble 2.6s ease-in-out infinite;transform-origin:50% 100%;}
+  @keyframes letterWobble{
+    0%,100%{transform:rotate(0deg) translateY(0) scale(1,1)}
+    20%{transform:rotate(var(--wob,-2deg)) translateY(-4px) scale(.97,1.05)}
+    45%{transform:rotate(0deg) translateY(3px) scale(1.03,.95)}
+    70%{transform:rotate(calc(var(--wob,-2deg)*-1)) translateY(-2px) scale(.98,1.02)}
+    88%{transform:rotate(calc(var(--wob,-2deg)*.5)) translateY(1px) scale(1.01,.99)}
+  }
+  h1.glitch::before,h1.glitch::after{
+    content:attr(data-text);
+    position:absolute;top:0;left:0;width:100%;
+    background:none;-webkit-text-fill-color:initial;
+    color:var(--pink);
+    clip-path:inset(0 0 0 0);
+    opacity:.28;
+  }
+  h1.glitch::before{color:var(--blue);transform:translate(-3px,2px);}
+  h1.glitch::after{color:var(--pink);transform:translate(3px,-2px);}
+  h1.glitch.burst::before{opacity:.9;animation:glitchSplit1 .5s steps(6,end);}
+  h1.glitch.burst::after{opacity:.9;animation:glitchSplit2 .5s steps(6,end);}
+  @keyframes glitchSplit1{
+    0%{clip-path:inset(10% 0 70% 0);transform:translate(-6px,0)}
+    20%{clip-path:inset(60% 0 5% 0);transform:translate(5px,0)}
+    40%{clip-path:inset(30% 0 40% 0);transform:translate(-4px,0)}
+    60%{clip-path:inset(75% 0 3% 0);transform:translate(6px,0)}
+    80%{clip-path:inset(5% 0 80% 0);transform:translate(-3px,0)}
+    100%{clip-path:inset(0 0 0 0);transform:translate(-3px,2px);opacity:.28}
+  }
+  @keyframes glitchSplit2{
+    0%{clip-path:inset(50% 0 20% 0);transform:translate(6px,0)}
+    20%{clip-path:inset(8% 0 60% 0);transform:translate(-5px,0)}
+    40%{clip-path:inset(65% 0 10% 0);transform:translate(4px,0)}
+    60%{clip-path:inset(15% 0 55% 0);transform:translate(-6px,0)}
+    80%{clip-path:inset(70% 0 8% 0);transform:translate(3px,0)}
+    100%{clip-path:inset(0 0 0 0);transform:translate(3px,-2px);opacity:.28}
+  }
+  .hero-sub{
+    position:relative;z-index:1;
+    max-width:36rem;
+    margin:1.6rem auto 0;
+    font-size:clamp(.95rem,1.6vw,1.15rem);
+    line-height:1.6;
+    color:var(--muted);
+  }
+  .hero-sub b{color:var(--ink);font-weight:600;}
+  .scroll-cue{
+    position:relative;z-index:1;
+    margin-top:3rem;
+    font-family:'Space Mono',monospace;
+    font-size:.72rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--muted);
+    animation:bob 2.2s ease-in-out infinite;
+  }
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+
+  main.scatter{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width:1500px;
+    margin:-260px auto 0;
+    height:var(--canvas-h,4600px);
+  }
+  .card{
+    position:absolute;
+    width:var(--w);
+    cursor:pointer;
+    background:var(--card-bg);
+    border:1px solid var(--border);
+    border-radius:2px;
+    padding:10px 10px 16px;
+    box-shadow:0 20px 50px -20px rgba(0,0,0,.7);
+    clip-path:var(--tear,none);
+    transition:box-shadow .35s ease, border-color .35s ease, left .9s cubic-bezier(.2,.8,.2,1), top .9s cubic-bezier(.2,.8,.2,1), width .7s cubic-bezier(.2,.8,.2,1);
+    animation:cardFloat var(--fdur,7s) ease-in-out infinite;
+    animation-delay:var(--fdelay,0s);
+    will-change:transform;
+    touch-action:none;
+    -webkit-user-select:none;user-select:none;
+  }
+  .card.dragging{
+    cursor:grabbing;
+    animation-play-state:paused;
+    transition:box-shadow .2s ease !important;
+    box-shadow:0 40px 90px -20px rgba(0,140,255,.5);
+  }
+  @keyframes cardFloat{
+    0%,100%{transform:rotate(var(--rot)) translate(0,0)}
+    50%{transform:rotate(var(--rot)) translate(var(--fx,3px),var(--fy,-9px))}
+  }
+  .card::before{
+    content:"";position:absolute;top:-14px;left:calc(50% - 34px);width:68px;height:26px;
+    background:repeating-linear-gradient(45deg,rgba(0,140,255,.35),rgba(0,140,255,.35) 4px,rgba(0,140,255,.15) 4px,rgba(0,140,255,.15) 8px);
+    border:1px solid rgba(244,239,228,.2);
+    transform:rotate(var(--tape-rot,-4deg));
+    opacity:.85;pointer-events:none;
+  }
+  .card:nth-child(3n)::before{background:repeating-linear-gradient(45deg,rgba(168,85,247,.35),rgba(168,85,247,.35) 4px,rgba(168,85,247,.15) 4px,rgba(168,85,247,.15) 8px);}
+  .card:nth-child(4n)::before{left:auto;right:6px;top:-10px;transform:rotate(6deg);}
+  .card:hover{
+    animation-play-state:paused;
+    transform:rotate(0deg) scale(1.06) skew(-1deg,.4deg);
+    border-color:rgba(244,239,228,.5);
+    box-shadow:0 30px 70px -16px rgba(0,140,255,.35);
+    z-index:999 !important;
+  }
+  .card:hover .frame{animation:cardJitter .3s steps(3,end);}
+  @keyframes cardJitter{
+    0%,100%{filter:none}
+    30%{filter:drop-shadow(-5px 0 var(--pink)) drop-shadow(5px 0 var(--blue)) invert(0)}
+    55%{filter:drop-shadow(4px 0 var(--pink)) drop-shadow(-4px 0 var(--blue)) invert(1)}
+    80%{filter:drop-shadow(-2px 0 var(--pink)) drop-shadow(2px 0 var(--blue)) invert(0)}
+  }
+  .card.idle-glitch .frame{animation:cardJitter .22s steps(4,end);}
+  .card.shatter{
+    animation:cardShatter .6s ease forwards;
+  }
+  @keyframes cardShatter{
+    0%{transform:rotate(var(--rot)) scale(1) translate(0,0);filter:none;opacity:1}
+    40%{transform:rotate(calc(var(--rot) + 35deg)) scale(.55) translate(34px,-28px);filter:blur(3px) drop-shadow(-7px 0 var(--pink)) drop-shadow(7px 0 var(--blue));opacity:.2}
+    70%{transform:rotate(calc(var(--rot) - 22deg)) scale(.55) translate(-28px,22px);opacity:.15}
+    100%{transform:rotate(var(--rot)) scale(1) translate(0,0);filter:none;opacity:1}
+  }
+  .card .frame{
+    position:relative;
+    width:100%;
+    aspect-ratio:4/3;
+    overflow:hidden;
+    border-radius:3px;
+    background:#000;
+  }
+  .card img{
+    width:100%;height:100%;object-fit:cover;
+    display:block;
+    filter:saturate(1.25) contrast(1.18) brightness(.96);
+    transition:transform .6s ease, filter .3s ease;
+  }
+  .card:hover img{transform:scale(1.1) rotate(-1deg);filter:saturate(1.5) contrast(1.3) hue-rotate(6deg);}
+  .card .pill{
+    position:absolute;top:8px;left:8px;
+    font-family:'Space Mono',monospace;
+    font-size:.6rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    padding:4px 8px;
+    border-radius:20px;
+    backdrop-filter:blur(6px);
+  }
+  .pill.professional{background:rgba(77,107,255,.28);color:#cfd8ff;border:1px solid rgba(77,107,255,.5);}
+  .pill.artistic{background:rgba(0,140,255,.24);color:#cfe6ff;border:1px solid rgba(0,140,255,.5);}
+  .pill.about{background:rgba(168,85,247,.28);color:#eaddff;border:1px solid rgba(168,85,247,.5);}
+  .card .cap{
+    margin-top:9px;
+    font-family:'Unbounded',sans-serif;
+    font-weight:500;
+    font-size:clamp(.78rem,1.1vw,.98rem);
+    line-height:1.25;
+    letter-spacing:-.01em;
+    cursor:grab;
+  }
+  .card.dragging .cap{cursor:grabbing;}
+  .card:nth-child(odd) .cap{transform:rotate(-.6deg);}
+  .card:nth-child(even) .cap{transform:rotate(.6deg);}
+  .card .sub{
+    margin-top:3px;
+    font-family:'Space Mono',monospace;
+    font-size:.66rem;
+    color:var(--muted);
+    letter-spacing:.02em;
+  }
+
+  footer{
+    position:relative;z-index:1;
+    text-align:center;
+    padding:6rem 1.5rem 5rem;
+    font-family:'Space Mono',monospace;
+    font-size:.78rem;
+    color:var(--muted);
+    letter-spacing:.04em;
+  }
+  footer b{color:var(--ink);}
+
+  .overlay{
+    position:fixed;inset:0;z-index:100;
+    background:rgba(5,4,8,.9);
+    backdrop-filter:blur(6px);
+    display:flex;align-items:center;justify-content:center;
+    padding:3vh 4vw;
+    opacity:0;visibility:hidden;
+    transition:opacity .3s ease, visibility .3s ease;
+  }
+  .overlay.open{opacity:1;visibility:visible;}
+  .modal{
+    position:relative;
+    width:min(1000px,100%);
+    max-height:92vh;
+    overflow-y:auto;
+    background:var(--bg2);
+    border:1px solid var(--border);
+    border-radius:2px;
+    clip-path:polygon(0 0,98% 0,100% 3%,100% 100%,2% 100%,0 97%);
+    display:flex;flex-direction:column;
+    transform:scale(.92) translateY(18px) rotate(-.4deg);
+    transition:transform .35s cubic-bezier(.2,.8,.2,1);
+    scrollbar-color:var(--pink) #0d0b16;
+    scrollbar-width:thin;
+  }
+  .modal::-webkit-scrollbar{width:10px;}
+  .modal::-webkit-scrollbar-track{background:#0d0b16;}
+  .modal::-webkit-scrollbar-thumb{background:var(--pink);border-radius:6px;border:2px solid #0d0b16;}
+  .modal::-webkit-scrollbar-thumb:hover{background:var(--blue);}
+  html{scrollbar-color:var(--pink) #08070c;scrollbar-width:thin;}
+  ::-webkit-scrollbar{width:10px;height:10px;}
+  ::-webkit-scrollbar-track{background:#08070c;}
+  ::-webkit-scrollbar-thumb{background:var(--pink);border-radius:6px;border:2px solid #08070c;}
+  ::-webkit-scrollbar-thumb:hover{background:var(--blue);}
+  .overlay.open .modal{transform:scale(1) translateY(0) rotate(0deg);}
+  .modal.glitching{animation:modalGlitch .38s steps(5,end);}
+  @keyframes modalGlitch{
+    0%{clip-path:inset(0 0 0 0);filter:none}
+    15%{clip-path:inset(8% 0 40% 0);transform:translate(-8px,0) scale(1);filter:drop-shadow(-4px 0 var(--pink)) drop-shadow(4px 0 var(--blue))}
+    30%{clip-path:inset(55% 0 5% 0);transform:translate(6px,0) scale(1)}
+    45%{clip-path:inset(20% 0 60% 0);transform:translate(-5px,0) scale(1)}
+    60%{clip-path:inset(65% 0 8% 0);transform:translate(4px,0) scale(1);filter:drop-shadow(3px 0 var(--pink)) drop-shadow(-3px 0 var(--blue))}
+    80%{clip-path:inset(4% 0 70% 0);transform:translate(-2px,0) scale(1)}
+    100%{clip-path:inset(0 0 0 0);transform:translate(0,0) scale(1);filter:none}
+  }
+  .modal .close{
+    position:absolute;top:14px;right:14px;z-index:6;
+    width:38px;height:38px;border-radius:50%;
+    background:rgba(8,7,12,.65);
+    border:1px solid var(--border);
+    color:var(--ink);
+    font-size:1.3rem;line-height:1;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+  }
+  .modal .close:hover{background:var(--pink);border-color:var(--pink);color:#08070c;}
+  .overlay .nav-btn{
+    position:fixed;top:50%;transform:translateY(-50%);z-index:110;
+    width:48px;height:48px;border-radius:50%;
+    background:rgba(8,7,12,.7);
+    border:1px solid var(--border);
+    color:var(--ink);font-size:1.3rem;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+  }
+  .overlay .nav-btn:hover{background:var(--pink);border-color:var(--pink);color:#08070c;}
+  .overlay .prev{left:clamp(10px,3vw,40px);}
+  .overlay .next{right:clamp(10px,3vw,40px);}
+  .modal .m-img{width:100%;height:min(48vh,460px);background:#000;overflow:hidden;border-radius:10px;position:relative;flex-shrink:0;margin-top:1.4rem;}
+  .modal .m-img img{width:100%;height:100%;object-fit:contain;display:block;background:#000;}
+  .modal .m-thumbs{display:flex;gap:8px;padding:14px 0 4px;flex-wrap:wrap;align-items:center;}
+  .modal .m-thumbs img{
+    width:64px;height:48px;object-fit:cover;border-radius:4px;cursor:pointer;
+    border:1px solid var(--border);opacity:.55;
+    transition:opacity .2s ease, border-color .2s ease;
+    flex-shrink:0;
+  }
+  .modal .m-thumbs img.active{opacity:1;border-color:var(--pink);}
+  .modal .m-hero-video{position:relative;width:100%;padding-top:56.25%;background:#000;border-radius:10px 10px 0 0;overflow:hidden;}
+  .modal .m-hero-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .modal .m-body{padding:1.6rem clamp(1.2rem,4vw,3rem) 2.6rem;}
+  .modal .m-tag{
+    font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.15em;
+    text-transform:uppercase;color:var(--pink);margin-bottom:.9rem;display:inline-block;
+  }
+  .modal .m-meta{
+    font-family:'Space Mono',monospace;font-size:.76rem;color:var(--muted);
+    margin-bottom:.6rem;letter-spacing:.02em;
+  }
+  .modal h2{
+    font-family:'Unbounded',sans-serif;font-weight:700;
+    font-size:clamp(1.5rem,3.2vw,2.4rem);
+    letter-spacing:-.01em;margin-bottom:.8rem;line-height:1.1;
+  }
+  .modal p{color:var(--muted);line-height:1.7;font-size:1rem;max-width:42rem;margin-bottom:1rem;}
+  .modal .m-videos{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:1.4rem;}
+  .modal .m-videos .vwrap{position:relative;width:100%;padding-top:56.25%;border-radius:6px;overflow:hidden;background:#000;border:1px solid var(--border);}
+  .modal .m-videos iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+  .modal .m-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:1.2rem;}
+  .modal .m-tags span{
+    font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.05em;
+    color:var(--ink);border:1px dashed var(--border);border-radius:2px;
+    padding:6px 12px;transform:rotate(-1deg);
+  }
+  .modal .m-headline{
+    font-family:'Unbounded',sans-serif;font-weight:500;font-size:1.05rem;
+    color:var(--pink);margin-bottom:1rem;line-height:1.4;
+  }
+  .modal .m-presented{margin-top:1.4rem;padding-top:1.2rem;border-top:1px solid var(--border);}
+  .modal .m-presented .p-section + .p-section{margin-top:1.2rem;}
+  .modal .m-presented h3{
+    font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.15em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:.7rem;
+  }
+  .modal .m-presented ul{list-style:none;}
+  .modal .m-presented li{
+    font-size:.88rem;color:var(--ink);line-height:1.6;
+    padding-left:1rem;position:relative;
+  }
+  .modal .m-presented li::before{content:"—";position:absolute;left:0;color:var(--pink);}
+
+  @media (max-width:820px){
+    header.hero{min-height:64vh;padding:5rem 1.2rem 1.5rem;}
+    main.scatter{
+      height:auto !important;
+      display:flex;flex-direction:column;align-items:center;
+      gap:2.6rem;
+      padding:1rem 1.2rem 3rem;
+    }
+    .card{
+      position:static !important;
+      width:100% !important;
+      max-width:420px;
+      transform:rotate(0deg) !important;
+    }
+    .card:hover{transform:none !important;}
+    .blob{filter:blur(60px);opacity:.28;}
+    .overlay .nav-btn{width:36px;height:36px;font-size:1rem;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="distress" x="-25%" y="-25%" width="150%" height="150%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.01 0.11" numOctaves="4" seed="8" result="noise1"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise1" scale="18" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
+
+<div class="bg-grid"></div>
+<div class="bg-grid-2"></div>
+<div class="bg-hazard"></div>
+<div class="bg-dots"></div>
+<div class="grain"></div>
+<div class="aura" id="aura"></div>
+
+<header class="hero">
+  <div class="blob blob-1"></div>
+  <p class="kicker">São Paulo · Itacaré, Bahia</p>
+  <h1 class="glitch" id="glitchTitle" data-text="Victor Pardinho">Victor<br>Pardinho</h1>
+  <p class="hero-sub">Brazilian <b>artist</b>, <b>researcher</b>, <b>curator</b> and <b>innovation manager</b> working across tridimensional content, spatial design and immersive technologies for over a decade.</p>
+  <p class="scroll-cue">scroll to wander ↓ click anything to open it</p>
+</header>
+
+<main class="scatter" id="scatter"></main>
+
+<footer>
+  <p><b>Victor Pardinho</b> — based between São Paulo and Itacaré, Bahia, Brazil.</p>
+</footer>
+
+<div class="overlay" id="overlay">
+  <button class="nav-btn prev" id="prevBtn" aria-label="Previous project">←</button>
+  <button class="nav-btn next" id="nextBtn" aria-label="Next project">→</button>
+  <div class="modal" id="modal">
+    <button class="close" id="closeBtn" aria-label="Close">×</button>
+    <div class="m-hero-video" id="mHeroVideo" style="display:none;"></div>
+    <div class="m-body">
+      <span class="m-tag" id="mTag"></span>
+      <h2 id="mTitle"></h2>
+      <p class="m-meta" id="mMeta"></p>
+      <div class="m-headline" id="mHeadline" style="display:none;"></div>
+      <div id="mDesc"></div>
+      <div class="m-tags" id="mTags"></div>
+      <div class="m-img"><img id="mImg" alt=""></div>
+      <div class="m-thumbs" id="mThumbs"></div>
+      <div class="m-videos" id="mVideos"></div>
+      <div class="m-presented" id="mPresentedWrap" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+<div class="scanlines"></div>
+<div class="flash" id="flash"></div>
+
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+<div class="blob blob-4"></div>
+<div class="blob blob-5"></div>
+
+<script>
+const projects = [{"id": "about", "title": "About", "catLabel": "About", "cat": "about", "role": "", "location": "São Paulo · Itacaré, Bahia", "years": "", "headline": "Between immersive art & do it yourself practices.", "desc": ["Victor Pardinho is a Brazilian born researcher, artist, and innovation manager delving into the realm of tridimensional content, spatial design and immersive technologies for over a decade. Currently based in São Paulo and Itacaré, Brazil.", "His journey involves experimenting with various techniques and media, ranging from immersive experiences and real-time technologies to traditional sculpting and performance art. Considered a hybrid artist and designer with strong technological and management skills, he's collaborated with diverse companies, design firms, game and film studios, artists and research groups — creating and exhibiting projects across South and North America, Europe, the Middle East and Asia.", "Having previously led product, innovation, and R&D initiatives in immersive technologies, he is now the co-founder and curator at Casa FOAMS, an artist residency space in Itacaré, Bahia. Alongside curating and nurturing this creative environment, he continues to explore his personal practice — traditional methods, spatial concepts, and DIY cultures."], "images": ["assets/images/about/about-01.jpg"], "cover": "assets/images/about/about-01.jpg", "videos": [], "tags": [], "presented": [], "sections": [{"title": "Professional experience", "items": ["Co-Founder, Visual Director & Curator — Casa FOAMS, Itacaré, Bahia / São Paulo / Remote (2026 — present)", "Product & Innovation Leader and R&D Manager — HTC Viverse, Amsterdam, Netherlands / Remote (2023 — 2026)", "Co-Founder, CEO & Product Owner — Sense of Space, Helsinki, Finland / Amsterdam, Netherlands / Remote (2019 — 2023)", "Chair, XR Entertainment Tools & Services — AIXR, The Academy of International Extended Reality, Remote (2021 — 2023)", "Advisor, XR Entertainment Advisory Group — AIXR, Remote (2020 — 2021)", "VR Awards Judge — AIXR, Remote (2020 — 2022)", "Pipeline Producer & Real-time Engine Developer — MEDIT, Centre of Excellence in Media Innovation, Tallinn, Estonia (2018 — 2019)", "Creative Producer & Real-time Engine Developer — Stereoscape, Helsinki, Finland (2017 — 2018)", "Producer, Real-time Engine Developer & Designer — Scopic, Amsterdam, Netherlands (2017)", "Research Assistant, Designer & Developer — Aalto University, Crucible Studios and NeuroCine Group, Helsinki, Finland (2015 — 2017)", "Designer, Research & Development — BijaRi, São Paulo, Brazil (2011 — 2014)", "Research Assistant — Centro Universitário Senac, São Paulo, Brazil (2009 — 2011)"]}, {"title": "Talks, exhibitions & teaching", "items": ["Games Developer Conference, San Francisco, USA (2025) — immersive technology demos, HTC Viverse booth", "Mobile World Congress, Barcelona, Spain (2025) — immersive technology demos, HTC Viverse booth", "Gamescom, Cologne, Germany (2024)", "SIGGRAPH (2024) — Breaking the Model: Democratising Access to Immersive Environments", "Games Developer Conference, San Francisco, USA (2024) — immersive technology demos, HTC Viverse booth", "Mobile World Congress, Barcelona, Spain (2024) — immersive technology demos, HTC Viverse booth", "South by Southwest, Austin, USA (2022) — From Buzz to Reality: Metaverse Now and Tomorrow", "TNW Talks at International Broadcasting Conference, Amsterdam, Netherlands (2022) — Round Table Discussion: Mobile & 5G Technologies", "Metalogues Festival, Online (2022) — Roundtable Discussion: Opportunities and Challenges of Cultural-XR Collaborations", "AIXR Insights Live, Online (2022) — Panel Debate: Building Your Own Metaverse", "Auggie Awards, Los Angeles, USA (2021) — Nominated, Best Creator and Authoring Tool (Sense XR Studio)", "AIXR Insights Live, Online (2021) — Panel Debate: Technology of the Future: How Technology Advances Are Expected to Impact XR Entertainment", "Vancouver Film Festival, Vancouver, Canada / Online (2020) — Panel Debate: Meet the Industry, Brave New 3D World", "AIXR Insights Live, Online (2020) — Panel Debate: Is It a Game or a Film? How Do We Define Where the Line Is with Interactive Narrative Experiences?", "Prague Quadrennial Blue Hour 36Q°, Prague, Czech Republic (2019) — The State of Darkness", "Actor and Avatar, Master Class at ZHdK, Zurich, Switzerland (2019) — The State of Darkness", "Actor and Avatar Seminar, ZHdK, Zurich, Switzerland (2019) — The State of Darkness", "Capes Print Symposium, UFSM, Brazil (2019) — The State of Darkness: Transdisciplinarity in Science and Arts", "ICIDS 2018, Dublin, Ireland (2018) — The State of Darkness", "10th Berlin Biennale for Contemporary Art, Berlin, Germany (2018) — Movimento I", "SESC 24 de Maio, São Paulo, Brazil (2018) — Movimento I", "LIFT Conference on Arts and Culture, Helsinki, Finland (2018) — selected for pitching competition", "KIUAS Start, Helsinki, Finland (2018) — selected for pre-accelerator program", "Aalto University & Parsons Design School, Helsinki, Finland / New York, USA (2018) — Master Course Teacher, Occupy Earth Mixed Reality Collaborative Course", "Stockholm Film Festival, Sweden (2017) — Ego Cure", "CILECT Conference, Zurich, Switzerland (2017) — Ego Cure", "SCSMI Conference, Helsinki, Finland (2017) — Ego Cure", "Loikka Dance Film Festival, Helsinki, Finland (2017) — Ego Cure", "Nordisk Panorama Film Festival, Malmö, Sweden (2017) — Ego Cure", "Kiasma Museum of Contemporary Art, Helsinki, Finland (2017) — Ego Cure, Art and Virtual Reality", "Mostra plattformPLUS HochX Theater, München, Germany (2017) — Movimento I", "MAFFE Festival, Helsinki, Finland (2017) — O Sino", "Metropolia University, Helsinki, Finland (2017) — Bachelor Course Teacher: CIA, New Media Interactions and Immersive Projects", "Goethe-Institut Theater, Salvador, Brazil (2016) — Movimento I", "VideoWall Festival, Ljubljana, Slovenia (2016) — Digital Fraction Ljubljana", "Finnish Embassy, Seoul, South Korea (2016) — Winter Every Day", "Lights, Camera, Interaction! Conference, Helsinki, Finland (2016) — VR Technology Tutor, VR Filmmaking Workshop", "Aalto Media Factory, Helsinki, Finland (2016) — Lecturer + Tutor, VR Filmmaking Workshop", "Dance in Focus International Festival, Rio de Janeiro, Brazil (2015) — LINIT", "SESC Bauru, São Paulo, Brazil (2015) — Movimento I", "Sesc Pompeia, São Paulo, Brazil (2015) — Workshop Teacher: New Media and Projection Mapping", "Museum of Contemporary Art of São Paulo, Brazil (2014) — TREPP, open air performance", "Streitfeld Projektraum, Munich, Germany (2014) — TREPP, open air performance", "University of Porto, Porto, Portugal (2014) — TREPP, open air performance", "SESC Sorocaba, Brazil (2014) — TREPP, open air performance", "SESC Santos, Brazil (2014) — TREPP, open air performance", "Caixa Cultural Prize, 4 Brazilian capitals: Fortaleza, Recife, Rio de Janeiro, São Paulo (2014) — VRUM & VRUMVRUMZINHO", "Crisantempo, São Paulo, Brazil (2014) — Movimento I, premiere", "Idea Fixa, São Paulo, Brazil (2014) — Workshop Teacher: New Media and Projection Mapping", "Tomie Ohtake Institute, São Paulo, Brazil (2014) — Art and Design in New Media, semestral course teacher", "FIART, International Festival of Art and Technology, Brasília, Brazil (2014) — Workshop Teacher with BijaRi Collective: Body Mapping, New Media in Corporal Arts", "SESC Vila Mariana, São Paulo, Brazil (2014) — Monthly Workshop Teacher: Art and Design in New Media", "SESC Santana, São Paulo, Brazil (2013) — TREPP, premiere", "Villa Waldberta, Munich, Germany (2013) — TREPP, work in progress presentation", "Instituto Europeo di Design, São Paulo, Brazil (2013) — Guest Teacher, Master in Architecture Course: Corporative Architecture Discipline", "National Meeting of Design Students (N Design), Rio de Janeiro, Brazil (2011) — Workshop Teacher: New Media New Ways", "Senac University Center, São Paulo, Brazil (2010) — Assistant Teacher, Graduation in Multimedia: Programming in Processing Language for Designers and New Media Projects Introduction"]}, {"title": "Education", "items": ["Master in New Media Design and Production — Aalto University, Helsinki, Finland (2015 — 2018), minor in Game Design and Production. Master Thesis: Volumetric Intelligence — A Framework for the Creation of Interactive Volumetric Captured Characters.", "Bachelor in Design and Visual Communications — Centro Universitário Senac, São Paulo, Brazil (2008 — 2011). Bachelor Thesis: Holoface COSMOS | Design for Environments of Holographic Interactivity (Senac + FAU/Poli, University of São Paulo).", "Scientific Initiation Project — Senac University, São Paulo, Brazil (2009 — 2011). Prototyping and Evaluation of Tridimensional Interactions in Augmented Reality and Virtual Environments, Laboratory for Research in Interactive Environments and Interlab, University of São Paulo."]}, {"title": "Languages", "items": ["English — Fluent", "Portuguese — Native", "Spanish — Limited working"]}], "w": 580, "rot": -5, "left": 72, "top": 0, "z": 1}, {"id": "casafoams", "title": "Casa FOAMS", "catLabel": "Professional work", "cat": "professional", "role": "Co-Founder, Visual Director & Curator", "location": "Itacaré, Bahia / São Paulo / Remote", "years": "2026 — present", "desc": ["Casa FOAMS is an artist residency space, creative lab and cultural hub I co-founded, set in the Atlantic Forest of Itacaré, Bahia — dedicated to artistic research, collective experimentation and regenerative practice, bridging international creators with local ecosystems, performance and community-driven art.", "As Co-Founder, Visual Director and Curator, I lead the space's visual identity and spatial experience, and shape part of its curatorial vision — designing residency programs, cultivating cross-disciplinary collaborations, and building a platform where spatial design, traditional methodologies and immersive artistic practice converge."], "images": ["assets/images/casafoams/casafoams-07.jpg", "assets/images/casafoams/casafoams-06.jpg", "assets/images/casafoams/casafoams-02.jpg", "assets/images/casafoams/casafoams-03.jpg", "assets/images/casafoams/casafoams-04.jpg", "assets/images/casafoams/casafoams-08.jpg", "assets/images/casafoams/casafoams-01.jpg", "assets/images/casafoams/casafoams-05.jpg"], "cover": "assets/images/casafoams/casafoams-07.jpg", "videos": [], "presented": [], "tags": ["Artist residency", "Visual identity", "Curatorial vision"], "headline": "", "w": 420, "rot": 3, "left": 2, "top": 230, "z": 2}, {"id": "htc-viverse", "title": "HTC Viverse", "catLabel": "Professional work", "cat": "professional", "role": "Product & Innovation Leader and Manager", "location": "Amsterdam / Remote", "years": "2023 — 2026", "desc": ["From 2023 to 2026, I worked as a Product & Innovation Leader and Manager at HTC VIVERSE. VIVERSE by HTC is a spatial platform that brings together people and technology to advance collaboration, training, gaming and social exploration using immersive technologies. Designed with robust security and cross-device support, VIVERSE empowers people to share their ideas in a 3D environment by reducing technical barriers and expressing their creativity.", "As Product & Innovation Leader and Manager, I drove the Advanced Research & Development team in the development of innovative technologies to power large multiplayer virtual worlds, 3D content creation and user generated content. Exploring and developing with the latest 3D graphics techniques, rendering and game engine advancements. Empowering content creators, artists and companies to be able to create 3D and immersive content without barriers.", "I also led strategic initiatives in R&D immersive technologies to expand the capabilities of the platform and unlock new interactive experiences, working closely with cross-functional teams, industry partners and research communities to stay ahead of emerging trends and shape the future of immersive technology."], "images": ["assets/images/htc-viverse/htc-viverse-01.png", "assets/images/htc-viverse/htc-viverse-02.png", "assets/images/htc-viverse/htc-viverse-03.png", "assets/images/htc-viverse/htc-viverse-04.png"], "cover": "assets/images/covers/htc-viverse-cover.jpeg", "videos": [{"type": "youtube", "id": "PuBD8kA8iwc"}, {"type": "youtube", "id": "E7FjUXofarI"}], "presented": [], "tags": [], "headline": "", "w": 520, "rot": 6, "left": 58, "top": 440, "z": 3}, {"id": "plastic-rain", "title": "Plastic Rain", "catLabel": "Artistic & research", "cat": "artistic", "role": "Independent artistic, design & research exploration", "location": "", "years": "2024 — ongoing", "desc": ["PLASTIC RAIN is my current artistic, design, and independent research exploration.", "After over a decade of working with digital media and immersive technologies, I've decided to take a step back and reconnect with the fundamentals. I'm returning to manual, hands-on practices, focusing on clay sculpting and three-dimensional observation. This exploration centers on understanding the core principles of three-dimensionality, with a particular emphasis on body, figurative art and underground pop culture.", "In contrast to my previous work in the digital realm, especially in an age where AI workflows are rapidly reshaping creative processes, I'm immersing myself in more artisanal mediums. I've always had a deep fascination with sculptures, action figures, toys, and the Japanese sofubi tradition. Now I'm delving deeper into these fields, working with materials like resin, silicone and soft vinyl to create handmade sculptures, toys and whatever comes to mind — rediscovering the tactile, human aspects of creation."], "images": ["assets/images/plastic-rain/plastic-rain-01.jpg", "assets/images/plastic-rain/plastic-rain-02.jpg", "assets/images/plastic-rain/plastic-rain-03.jpg", "assets/images/plastic-rain/plastic-rain-04.jpg", "assets/images/plastic-rain/plastic-rain-05.jpg", "assets/images/plastic-rain/plastic-rain-06.jpg", "assets/images/plastic-rain/plastic-rain-07.jpg", "assets/images/plastic-rain/plastic-rain-08.jpg"], "cover": "assets/images/covers/plastic-rain-cover.jpg", "videos": [], "presented": [], "tags": [], "headline": "", "w": 400, "rot": -6, "left": -4, "top": 670, "z": 4}, {"id": "sense-of-space", "title": "Sense of Space", "catLabel": "Professional work", "cat": "professional", "role": "Co-founder, CEO & Product Owner/Manager", "location": "Helsinki / Amsterdam", "years": "2019 — 2023", "desc": ["From 2019 to 2023, I founded the startup Sense of Space and acted as a co-founder, CEO and Product Owner/Manager intensively during five years. Building the company from scratch, all the way to funding, product development and a successful acquisition. At Sense of Space, we created the future of 3D data streaming for immersive experiences, specialising in developing 3D authoring tools, cloud-based 3D compression, optimization and streaming technologies.", "Working with several companies and 3D artists, becoming leaders in the authoring and 3D streaming space. During the years, I led the company building it from zero, growing and managing a high profile team, product leading and management, technology roadmap, stakeholder relations, fundraising, business development, company and continuous product vision.", "Being able to build a very competent team and becoming one of the leading startups in the field, with a small team and limited resources. We managed to create compelling new technologies and products that solved real-world problems, when it comes to creating and displaying 3D models and 3D data in an efficient way. The company was acquired at the beginning of 2023 by one of the biggest players in the immersive technology field."], "images": ["assets/images/sense-of-space/sense-of-space-02.png", "assets/images/sense-of-space/sense-of-space-04.png", "assets/images/sense-of-space/sense-of-space-06.png", "assets/images/sense-of-space/sense-of-space-01.jpg"], "cover": "assets/images/covers/sense-of-space-cover.jpg", "videos": [{"type": "youtube", "id": "jZ2CF5BbQbw"}], "presented": [], "tags": [], "headline": "", "w": 560, "rot": 4, "left": 68, "top": 880, "z": 5}, {"id": "afrotranstopia", "title": "Afrotranstopia — Movimento", "catLabel": "Artistic & research", "cat": "artistic", "role": "With choreographer Mario Lopes", "location": "", "years": "since 2014", "desc": ["Since 2014, I've been actively collaborating with the choreographer, performer and director Mario Lopes, especially in art projects related to the research on Afrotranstopia and the series of projects entitled Movimento and Veiculo SUR.", "By the use of live visuals, projection mapping, interactive and body sensors, I collaborate in several performances and projects related to the Afrotranstopia research initiated by Mario Lopes, exhibiting the results especially in Europe and South America.", "Afrotranstopian technology does not only mean technical or digital resources — it means what we also use in the creation process. In Afrotranstopia, technology is thought of as mobilisation and activation of knowledge, ways of life, and of matriarchal, ancestral, indigenous and Afrodiasporic forms of resistance. Afrotranscendence is the multiple strategies for staying alive, even when it seems impossible.", "Movimento I is a study on giving sonority to the body and body to the instrument. It gives vent to what starts in the sonorities of the past and continues to scream in the present. Kodex_Konflikt reflects on our social codes of behavior, processes of physical adaptation and moments of confrontation with the body that is perceived as strange by language, skin color or ways of being."], "images": ["assets/images/afrotranstopia/afrotranstopia-01.jpg", "assets/images/afrotranstopia/afrotranstopia-02.jpg", "assets/images/afrotranstopia/afrotranstopia-03.jpg", "assets/images/afrotranstopia/afrotranstopia-04.jpg", "assets/images/afrotranstopia/afrotranstopia-05.jpg"], "cover": "assets/images/covers/afrotranstopia-cover.jpg", "videos": [{"type": "vimeo", "id": "286091427"}], "presented": ["10th Berlin Biennale for Contemporary Art, Berlin (2018)", "SESC 24 de Maio, São Paulo (2018)", "Mostra plattformPLUS HochX Theater, München (2017)", "Goethe-Institut Theater, Salvador (2016)", "SESC Bauru, São Paulo (2015)", "SESC Sorocaba, São Paulo (2014)", "Premiered 2014, Crisantempo"], "tags": [], "headline": "", "w": 380, "rot": -3, "left": 8, "top": 1120, "z": 6}, {"id": "medit", "title": "Medit", "catLabel": "Professional work", "cat": "professional", "role": "Pipeline Producer & Real-Time Engine Designer", "location": "Tallinn, Estonia", "years": "2018 — 2020", "desc": ["From 2018 to 2020, I worked as a Pipeline Producer and Real-Time Engine Designer for MEDIT, the Centre of Excellence in Media Innovation and Digital Culture of Tallinn University and the Baltic Film School. During my work there I worked mainly with producing new pipelines for working with real-time 3D engines, especially Unreal and Unity Engine, creating innovative workflows for the centre's projects, engaging with several researchers, artists and professionals in the media field, and pioneering the research and development in the Enactive Virtuality Group.", "One of the main projects created was The State of Darkness, which can be seen in more detail in the Artistic & Research Work category. Another big project was the research and development into the Enactive Avatar research work, pioneered by Pia Tikka and the NeuroCine group. During these explorations we were able to publish several papers and technical R&D outcomes, published in various journals.", "During my stay at MEDIT, I also started the first steps for the startup I was going to found after my residency ended — gathering innovative concepts and new ideas with the goal to bring new technologies into the business and commercial world, which happened with the foundation of Sense of Space, the startup I co-founded and worked with for the next five years."], "images": ["assets/images/medit/medit-01.jpg", "assets/images/medit/medit-05.jpg", "assets/images/medit/medit-04.jpg", "assets/images/medit/medit-03.jpg"], "cover": "assets/images/covers/medit-cover.jpg", "videos": [], "presented": ["MOBTT90 — \"Enactive co-presence in narrative virtual reality: a triadic interaction model\", Principal Investigator: Pia Tikka, Tallinn University Baltic Film, Media and Arts School", "Pardinho, V.; Tikka, P. (2023). Facing Characters: A Volumetric Intelligence Framework. In Actor & Avatar. A Catalog. Columbia University Press.", "Tikka, P.; Pardinho, V. et al. (2018). The State of Darkness — VR Experience. ICIDS 2018 Art Exhibition, Science Gallery, Trinity College Dublin."], "tags": [], "headline": "", "w": 500, "rot": 5, "left": 50, "top": 1330, "z": 7}, {"id": "digital-fraction", "title": "Digital Fraction", "catLabel": "Artistic & research", "cat": "artistic", "role": "Photogrammetry & 3D scanning studies", "location": "São Paulo · Helsinki · Ljubljana", "years": "2014 — 2016", "desc": ["DIGITAL FRACTION is a project I began in 2014, which ran actively until 2016, when I first started exploring photogrammetry and 3D scanning. The concept was to capture my surroundings in a three-dimensional format, then import these digitalized versions to create a fragmented, distorted, and digitally fractured interpretation of real space.", "I executed this project three times: once in São Paulo, once in Helsinki, and once in Ljubljana. The Helsinki version evolved into Winter Every Day, showcased at the Finnish Embassy in Seoul, South Korea. The São Paulo version became a music video for O Sino, a collaboration between Doomy (UK) and Memórias de um Caramujo (BR).", "This remains an ongoing exploration for me, and I continue to revisit it, now in connection with PLASTIC _ RAIN, drawing from the knowledge I've gained throughout my professional career while incorporating the latest innovations in the field."], "images": ["assets/images/digital-fraction/digital-fraction-01.jpg", "assets/images/digital-fraction/digital-fraction-02.jpg", "assets/images/digital-fraction/digital-fraction-03.jpg", "assets/images/digital-fraction/digital-fraction-04.jpg", "assets/images/digital-fraction/digital-fraction-05.jpg"], "cover": "assets/images/covers/digital-fraction-cover.png", "videos": [{"type": "vimeo", "id": "196885339"}, {"type": "youtube", "id": "9tzpZDAcDFM"}, {"type": "vimeo", "id": "144599384"}], "presented": ["Digital Fraction | Ljubljana — VideoWall Festival, Ljubljana (2016)", "Winter Every Day | Seoul — Finnish Embassy, Seoul (2016)", "O Sino | São Paulo — MAFFE Festival, Helsinki (2017)"], "tags": [], "headline": "", "w": 410, "rot": -7, "left": -3, "top": 1580, "z": 8}, {"id": "aixr", "title": "AIXR", "catLabel": "Professional work", "cat": "professional", "role": "Advisor, then Chair — XR Entertainment Tools & Services · VR Awards Judge", "location": "Remote", "years": "2020 — 2023", "desc": ["I served the Academy of International Extended Reality across three roles: as Advisor to the XR Entertainment Advisory Group (2020–21), joining indie and AAA studio leaders working through the challenges of XR content; then as Chair of the XR Entertainment Tools & Services Advisory Group (2021–23), focused on the business side of VR, AR and Web3 services.", "Alongside these roles, I was a VR Awards judge from 2020 to 2022, evaluating entries across VR Company of the Year, VR Marketing of the Year, VR Social Influencer of the Year and VR Game of the Year."], "images": ["assets/images/aixr/aixr-01.jpg", "assets/images/aixr/aixr-02.jpg"], "cover": "assets/images/aixr/aixr-01.jpg", "videos": [], "presented": [], "tags": ["Advisor", "Chair", "Awards judge"], "headline": "", "w": 540, "rot": 3, "left": 62, "top": 1790, "z": 9}, {"id": "ego-cure", "title": "Ego Cure — Virtual Cinema Lab", "catLabel": "Artistic & research", "cat": "artistic", "role": "Aalto Virtual Cinema Lab", "location": "Helsinki", "years": "2015 — 2017", "desc": ["From 2015 to 2017, I was part of Aalto University's Virtual Cinema Lab, an experimental space for research and production of immersive cinema and interactive experiences. During my residency, I worked on the pioneering immersive film EGO CURE, directed by Synes Elischka — a groundbreaking blend of immersive filmmaking and real-time engines, central to the study of enactive and interactive cinema.", "In EGO CURE, I focused on the virtual aspect, where the protagonist enters a digital version of the film. Before this transition, there's an enactive scene where the character interacts with the viewer in a groundbreaking way, marking the first enactive interaction between a film character and an audience in VR, based on Enactive Avatar research by Pia Tikka.", "The plot follows Emma, a choreographer who decides to rewrite her performance a day before its premiere, facing resistance from the curator. At a pivotal moment, Emma must wear the Ego Cure mask, propelling the viewer into a world that breaks the fourth wall and explores the narrative possibilities of Virtual Reality storytelling."], "images": ["assets/images/ego-cure/ego-cure-01.jpg", "assets/images/ego-cure/ego-cure-04.jpg", "assets/images/ego-cure/ego-cure-02.jpg", "assets/images/ego-cure/ego-cure-03.jpg", "assets/images/ego-cure/ego-cure-06.jpg", "assets/images/ego-cure/ego-cure-07.jpg"], "cover": "assets/images/covers/ego-cure-cover.jpg", "videos": [{"type": "vimeo", "id": "202516480"}], "presented": ["Art and Virtual Reality — Kiasma Museum of Contemporary Art, Helsinki (2017)", "Nordisk Panorama Film Festival, Malmö (2017)", "Loikka Dance Film Festival, Helsinki (2017)", "SCSMI Conference, Helsinki (2017)", "CILECT Conference, Zurich (2017)", "Stockholm Film Festival, Stockholm (2017)"], "tags": [], "headline": "", "w": 390, "rot": -4, "left": 4, "top": 2030, "z": 10}, {"id": "bijari", "title": "BijaRi", "catLabel": "Professional work", "cat": "professional", "role": "Designer, Producer & Developer", "location": "São Paulo, Brazil", "years": "2011 — 2015", "desc": ["From 2011 to 2015, I worked as a designer, producer and developer at BijaRi, one of the most important new media and art studios in Brazil — working especially with video design, production, projection mapping and audiovisual experiences. I created several projects for high-tier customers such as Google, Absolut and Philip Morris, and worked with recognized art studios and museums such as the Museum of Modern Art of Rio de Janeiro, MASP and the Museum of Image and Sound of São Paulo, among others.", "During the years at the studio, I also worked doing live visuals for several music festivals such as Rock in Rio and Festival Planeta Terra, as well as for the biggest media companies in the country such as Globo Productions, on big shows like Criança Esperança and Carnaval Broadcasting.", "Alongside working with high-tier customers, big festivals and media corporations, I also worked quite actively on the pure art side of the studio, creating compelling and socially important artworks and exhibitions exploring different subjects regarding Brazilian culture and contemporary political issues."], "images": ["assets/images/bijari/bijari-02.jpg", "assets/images/bijari/bijari-03.jpg", "assets/images/bijari/bijari-04.jpg", "assets/images/bijari/bijari-05.jpg", "assets/images/bijari/bijari-06.jpg"], "cover": "assets/images/covers/bijari-cover.jpg", "videos": [{"type": "vimeo", "id": "144600921"}, {"type": "vimeo", "id": "194669445"}], "presented": [], "tags": [], "headline": "", "w": 510, "rot": 6, "left": 12, "top": 2240, "z": 11}, {"id": "state-of-darkness", "title": "The State of Darkness — Medit", "catLabel": "Artistic & research", "cat": "artistic", "role": "Pipeline Producer & Real-Time Engine Designer", "location": "Tallinn", "years": "2018 — 2019", "desc": ["From 2018 to 2019, I worked as a Pipeline Producer and Real-Time Engine Designer for MEDIT, the Centre of Excellence in Media Innovation and Digital Culture at Tallinn University and the Baltic Film School. One of the main projects I contributed to was The State of Darkness, which also tied into my Master's Thesis research on Volumetric Intelligence: A Framework for the Creation of Interactive Volumetric Captured Characters.", "The State of Darkness is a VR installation where participants find themselves locked in a prison cell with a distressed person. The encounter's emotional impact is tracked by biosensors, linking the participant's fate to that of their fellow prisoner. I was responsible for the entire production, collaborating closely with director and researcher Pia Tikka, from concept to 3D game engine creation and exhibition at various festivals and academic conferences.", "The project explores the symbiotic co-presence of human and non-human entities. Central to the narrative is Adam B, a virtual character trained to respond to human facial expressions. His non-human narrative unfolds based on real-time biosensor data, influenced by the participant's behavior — the story of Adam B emerges from his algorithmically simulated mind, while the participant experiences the human narrative.", "Supported by the Finnish Cultural Foundation, VCL Lab Aalto University, and the EU Mobilitas Pluss Grant from Tallinn University, the project also generated several academic papers published in various journals."], "images": ["assets/images/state-of-darkness/state-of-darkness-01.jpeg", "assets/images/state-of-darkness/state-of-darkness-03.png", "assets/images/state-of-darkness/state-of-darkness-05.png", "assets/images/state-of-darkness/state-of-darkness-02.jpeg"], "cover": "assets/images/covers/state-of-darkness-cover.jpg", "videos": [], "presented": ["Transdisciplinarity in Science and Arts — Capes Print Symposium at UFSM, Brazil (2020)", "Actor and Avatar Seminar, ZHdK Zurich (2019)", "Master Class at Actor and Avatar, ZHdK Zurich (2019)", "Prague Quadrennial Blue Hour 36Q°, Prague (2019)", "ICIDS 2018, Dublin (2018)"], "tags": [], "headline": "", "w": 420, "rot": -8, "left": 55, "top": 2490, "z": 12}, {"id": "scopic", "title": "Scopic", "catLabel": "Professional work", "cat": "professional", "role": "Designer & Developer", "location": "Amsterdam, Netherlands", "years": "2016 — 2017", "desc": ["From 2016 to 2017, I worked as a designer and developer for Scopic, an award-winning and pioneering Virtual Reality studio based in Amsterdam, specializing in high-end productions from 360° video to real-time 3D experiences across multiple hardware and platform environments.", "I was involved in creating innovative, cutting-edge VR experiences, including high-profile projects like Volvo Ocean Race – UNESCO and collaborating with leading corporates such as Ernst & Young, ING, and KLM — blending technological innovation with a deep, pioneering approach to virtual reality and immersive storytelling.", "I was also responsible for R&D and the development of new workflows and pipelines for 3D immersive projects executed by the studio, optimizing production processes and ensuring the team had the tools and technologies to deliver the highest quality immersive experiences."], "images": ["assets/images/scopic/scopic-01.jpg", "assets/images/scopic/scopic-02.jpg", "assets/images/scopic/scopic-03.jpg", "assets/images/scopic/scopic-04.jpg"], "cover": "assets/images/covers/scopic-cover.jpg", "videos": [{"type": "youtube", "id": "35mB50wwYb4"}], "presented": [], "tags": [], "headline": "", "w": 400, "rot": 4, "left": 0, "top": 2700, "z": 13}, {"id": "dmv22", "title": "DMV 22 — Collective", "catLabel": "Artistic & research", "cat": "artistic", "role": "Live visuals & projection mapping", "location": "", "years": "2013 — 2015", "desc": ["DMV 22 was a performance and multimedia art collective that I worked extensively with between 2013 and 2015, especially focused on creating visuals for the group's performances, exhibited around the whole country of Brazil and a good part of Europe. During these years I also developed a special relationship with the director and performer Mario Lopes, one of my main art partners until today (see Afrotranstopia).", "TREPP is a live performance with two performers, a small orchestra and two live VJs — a sinfonie of moving images and bodies following the temperature of the musical composition, performed live in open or public spaces. It developed out of videos of dancing bodies in the urban space that served as a guiding line for the composer, whose live-performed music defines the movement of the performers, deepening the collective's research of the urban space.", "LINIT is a poetic vision on the feelings of a split-up, recorded during a tour of more than 50 shows of the VRUM and VRUMVRUMZINHO performances. VRUM itself is a performance on sound, colour and movement in dialogue with the urban space — the constant body appropriation of urbanity and the resulting physical re-adaptations reflected in immediate, spontaneous improvisation."], "images": ["assets/images/dmv22/dmv22-01.jpg", "assets/images/dmv22/dmv22-03.jpg", "assets/images/dmv22/dmv22-04.jpg", "assets/images/dmv22/dmv22-06.jpg", "assets/images/dmv22/dmv22-07.jpg"], "cover": "assets/images/covers/dmv22-cover.jpg", "videos": [{"type": "vimeo", "id": "199643350"}, {"type": "vimeo", "id": "119146555"}, {"type": "vimeo", "id": "207178656"}], "presented": ["TREPP — Museum of Contemporary Art, São Paulo (2014)", "TREPP — Streitfeld Projektraum, Munich (2014)", "TREPP — University of Porto, Porto (2014)", "TREPP — SESC Sorocaba & SESC Santos, São Paulo (2014)", "TREPP — premiere, SESC Santana, São Paulo (2013)", "TREPP — work in progress, Villa Waldberta, Munich (2013)", "LINIT — Dance in Focus International Festival, Rio de Janeiro (2015)", "VRUM — Caixa Cultural Prize, 4 Brazilian capitals (2014)"], "tags": [], "headline": "", "w": 550, "rot": -5, "left": 45, "top": 2950, "z": 14}, {"id": "stereoscape", "title": "Stereoscape", "catLabel": "Professional work", "cat": "professional", "role": "Creative Producer & Designer", "location": "Helsinki, Finland", "years": "2017 — 2018", "desc": ["From 2017 to 2018 I worked as a creative producer and designer on several immersive experiences for enterprise and heavy industries as part of the Stereoscape team, an immersive content creation company based in Helsinki. One of the highlights was the main virtual reality experience for Nokia at Mobile World Congress 2018 — an entire virtual tour of their 5G laboratory using photogrammetry, 3D scanning, and real-time engines to demonstrate their work and research behind 5G technologies.", "A multiuser real-time VR experience transported visitors at Nokia Digital City in Mobile World Congress 2018 in Barcelona to the 5G center of excellence in Oulu, Finland. Visitors, represented as avatars, could virtually meet with Nokia's experts in Oulu, who guided them in real time through a tour of the 5G lab, showcasing the potential and benefits of 5G in an immersive and informative way.", "Another relevant project was Nokia AR, part of a series of Augmented Reality experiences developed for Nokia. Zero Emission AR demonstrated Nokia's vision for a zero-emission future using renewable energy and product modernization. Private LTE AR was a large-scale AR experience illustrating how Nokia's network applied to an automated factory supports a faster, more secure workflow, with participants navigating the story via hot-spots or following a presenter, all interacting in sync via network connection."], "images": ["assets/images/stereoscape/stereoscape-01.jpg", "assets/images/stereoscape/stereoscape-04.png", "assets/images/stereoscape/stereoscape-05.png", "assets/images/stereoscape/stereoscape-02.png"], "cover": "assets/images/covers/stereoscape-cover.jpg", "videos": [], "presented": [], "tags": [], "headline": "", "w": 430, "rot": 3, "left": 10, "top": 3160, "z": 15}, {"id": "workshops", "title": "Workshops — Teaching", "catLabel": "Artistic & research", "cat": "artistic", "role": "Teaching, talks & masterclasses", "location": "", "years": "2010 — ongoing", "desc": ["As part of my practice, I always enjoyed teaching and giving workshops in the subjects of design, innovation, audiovisual, immersive and interactive experiences. I started teaching in 2010 and have given many workshops throughout the years — including being part of pioneering programs such as the first VR Filmmaking Course in Finland, and the first collaboration between Aalto University (Helsinki) and Parsons Design School (New York City).", "I also have a strong presence giving talks and masterclasses, especially at events focused on immersive technologies — among them VR Days, South by Southwest in Austin, the Berlin Biennale, the Prague Quadrennial, Laval Virtual and others."], "images": ["assets/images/workshops/workshops-01.png", "assets/images/workshops/workshops-02.png", "assets/images/workshops/workshops-03.jpg", "assets/images/workshops/workshops-04.jpg", "assets/images/workshops/workshops-05.png", "assets/images/workshops/workshops-06.jpg"], "cover": "assets/images/workshops/workshops-01.png", "videos": [{"type": "vimeo", "id": "124896985"}], "presented": ["South by Southwest, Austin, USA (2022) — Event Speaker and Participant: From Buzz to Reality: Metaverse Now and Tomorrow", "TNW Talks at International Broadcasting Conference, Amsterdam, Netherlands (2022) — Round Table Discussion: Mobile & 5G Technologies", "Metalogues Festival 2022, Online — Roundtable Discussion: Opportunities and Challenges of Cultural-XR Collaborations", "AIXR Insights Live, Online (2022) — Panel Debate Participant: Building Your Own Metaverse", "Auggie Awards USA, Los Angeles, USA (2021) — Nominated for Best Creator and Authoring Tool (Sense XR Studio)", "AIXR Insights Live, Online (2021) — Panel Debate Participant: Technology of the Future: How Technology Advances are Expected to Impact XR Entertainment", "VIFF Immersed, Vancouver, Online (2020) — Panel Debate Participant: Meet The Industry: Brave New 3D World", "AIXR Insights Live, Online (2020) — Panel Debate Participant: Is it a Game or a Film – How Do We Define Where The Line Is with Interactive Narrative Experiences?", "LIFT Conference on Arts and Culture, Helsinki, Finland (2018) — Selected for Pitching Competition", "KIUAS Start, Helsinki, Finland (2018) — Selected for Pre-Accelerator Program", "Aalto University and NY Parsons Design School, Helsinki, Finland (2018) — Master Course Teacher, Occupy Earth Mixed Reality Collaborative Course", "Aalto University and NY Parsons Design School, Helsinki, Finland / New York, USA (2018) — Master Course Teacher, Occupy Earth / Mixed Reality Collaborative Course", "Metropolia University, Helsinki, Finland (2017) — Bachelor Course Teacher: CIA, New Media Interactions and Immersive Projects", "Lights, Camera, Interaction! Conference, Helsinki, Finland (2016) — VR Technology Tutor, VR Filmmaking Workshop", "Aalto Media Factory, Helsinki, Finland (2016) — Lecturer + Tutor, VR Filmmaking Workshop", "SESC Pompeia, São Paulo, Brazil (2015) — Workshop Teacher: New Media and Projection Mapping", "Idea Fixa, São Paulo, Brazil (2014) — Workshop Teacher: New Media and Projection Mapping", "Tomie Ohtake Institute, São Paulo, Brazil (2014) — Art and Design in New Media, Semestral Course Professor", "FIART – International Festival of Art and Technology, Brasília, Brazil (2014) — Workshop Professor (with BijaRi Collective): Body Mapping, New Media in Corporal Arts", "Sesc Vila Mariana, São Paulo, Brazil (2013) — Monthly Workshop Professor: Art and Design in New Media", "Instituto Europeo di Design, São Paulo, Brazil (2013) — Guest Professor, Master in Architecture Course: Corporative Architecture Discipline", "National Meeting of Design Students (N Design), Rio de Janeiro, Brazil (2011) — Workshop Professor: New Media New Ways", "Senac University Center, São Paulo, Brazil (2010) — Assistant Professor, Graduation in Multimedia: Programming in Processing Language for Designers and New Media Projects Introduction"], "tags": [], "headline": "", "w": 410, "rot": -6, "left": 5, "top": 3410, "z": 16}];
+
+document.documentElement.style.setProperty('--canvas-h', (Math.max(...projects.map(p=>p.top)) + 700) + 'px');
+
+const scatter = document.getElementById('scatter');
+projects.forEach((p, idx) => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.setProperty('--w', p.w + 'px');
+  card.style.setProperty('--rot', p.rot + 'deg');
+  card.style.left = p.left + '%';
+  card.style.top = p.top + 'px';
+  card.style.zIndex = p.z;
+  card.dataset.basew = p.w;
+  card.style.setProperty('--fdur', (5 + (idx % 5) * 1.1) + 's');
+  card.style.setProperty('--fdelay', ((idx * 0.4) % 3) + 's');
+  card.style.setProperty('--fx', (((idx * 17) % 10) - 5) + 'px');
+  card.style.setProperty('--fy', (-6 - ((idx * 13) % 9)) + 'px');
+  const tearSeed = (idx * 37) % 100;
+  const t1 = 1 + (tearSeed % 3), t2 = 1 + ((tearSeed*3) % 3), t3 = 1 + ((tearSeed*5) % 3), t4 = 1 + ((tearSeed*7) % 3);
+  card.style.setProperty('--tear', `polygon(0 ${t1}%, ${100-t2}% 0, 100% ${t3}%, ${100-t4}% 100%, ${t2}% 100%, 0 ${100-t1}%)`);
+  card.style.setProperty('--tape-rot', ((tearSeed % 9) - 4) + 'deg');
+  const subLine = [p.role, p.years].filter(Boolean).join(' · ');
+  card.innerHTML =
+    '<div class="frame">' +
+      '<span class="pill ' + p.cat + '">' + p.catLabel + '</span>' +
+      '<img src="' + p.cover + '" alt="' + p.title + '" loading="lazy" draggable="false">' +
+    '</div>' +
+    '<div class="cap">' + p.title + '</div>' +
+    (subLine ? '<div class="sub">' + subLine + '</div>' : '');
+  card.dataset.origz = p.z;
+  let dragInfo = null;
+  const dragHandle = card.querySelector('.cap');
+  dragHandle.addEventListener('pointerdown', e => {
+    if(e.button !== undefined && e.button !== 0) return;
+    const rect = card.getBoundingClientRect();
+    const scatterRect = scatter.getBoundingClientRect();
+    dragInfo = {
+      startX: e.clientX, startY: e.clientY,
+      startLeftPx: rect.left - scatterRect.left,
+      startTopPx: rect.top - scatterRect.top,
+      moved: false
+    };
+    card.classList.add('dragging');
+    card.style.zIndex = 99999;
+    card.setPointerCapture(e.pointerId);
+  });
+  card.addEventListener('pointermove', e => {
+    if(!dragInfo) return;
+    const dx = e.clientX - dragInfo.startX;
+    const dy = e.clientY - dragInfo.startY;
+    if(Math.abs(dx) > 4 || Math.abs(dy) > 4) dragInfo.moved = true;
+    if(!dragInfo.moved) return;
+    const scatterWidth = scatter.getBoundingClientRect().width;
+    card.style.left = ((dragInfo.startLeftPx + dx) / scatterWidth * 100) + '%';
+    card.style.top = (dragInfo.startTopPx + dy) + 'px';
+  });
+  card.addEventListener('pointerup', () => {
+    if(dragInfo && dragInfo.moved){
+      card.dataset.justDragged = '1';
+      setTimeout(() => { delete card.dataset.justDragged; }, 60);
+    }
+    card.classList.remove('dragging');
+    card.style.zIndex = card.dataset.origz;
+    dragInfo = null;
+  });
+  card.addEventListener('click', () => {
+    if(card.dataset.justDragged) return;
+    openModal(p);
+  });
+  scatter.appendChild(card);
+});
+
+
+document.querySelectorAll('h1.glitch').forEach(h1 => {
+  const wordClasses = ['word-victor', 'word-pardinho'];
+  let textNodeIndex = 0;
+  [...h1.childNodes].forEach(node => {
+    if(node.nodeType === 3){
+      const wordSpan = document.createElement('span');
+      wordSpan.className = 'word ' + (wordClasses[textNodeIndex] || 'word-victor');
+      [...node.textContent].forEach((ch, i) => {
+        if(ch === ' '){ wordSpan.appendChild(document.createTextNode(' ')); return; }
+        const span = document.createElement('span');
+        span.className = 'lw';
+        span.textContent = ch;
+        span.style.setProperty('--wob', ((i * 47) % 7 - 3) + 'deg');
+        span.style.animationDelay = ((i * 0.09) % 1.2) + 's';
+        wordSpan.appendChild(span);
+      });
+      node.replaceWith(wordSpan);
+      textNodeIndex++;
+    }
+  });
+});
+
+function ytEmbed(id){ return 'https://www.youtube.com/embed/' + id; }
+function vimeoEmbed(id){ return 'https://player.vimeo.com/video/' + id; }
+
+const overlay = document.getElementById('overlay');
+const modal = document.getElementById('modal');
+const mImg = document.getElementById('mImg');
+const mThumbs = document.getElementById('mThumbs');
+const mHeroVideo = document.getElementById('mHeroVideo');
+const mTag = document.getElementById('mTag');
+const mTitle = document.getElementById('mTitle');
+const mMeta = document.getElementById('mMeta');
+const mDesc = document.getElementById('mDesc');
+const mHeadline = document.getElementById('mHeadline');
+const mTags = document.getElementById('mTags');
+const mVideos = document.getElementById('mVideos');
+const mPresentedWrap = document.getElementById('mPresentedWrap');
+const flash = document.getElementById('flash');
+let currentIndex = 0;
+let carouselTimer = null;
+let carouselImages = [];
+let carouselIndex = 0;
+let thumbShuffleTimer = null;
+
+function makeIframe(v){
+  const iframe = document.createElement('iframe');
+  iframe.src = v.type === 'youtube' ? ytEmbed(v.id) : vimeoEmbed(v.id);
+  iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+  iframe.allowFullscreen = true;
+  iframe.loading = 'lazy';
+  return iframe;
+}
+
+function setCarouselImage(i){
+  carouselIndex = (i + carouselImages.length) % carouselImages.length;
+  mImg.src = carouselImages[carouselIndex];
+  mThumbs.querySelectorAll('img').forEach((el, idx) => el.classList.toggle('active', idx === carouselIndex));
+}
+function startCarousel(){
+  stopCarousel();
+  if(carouselImages.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    carouselTimer = setInterval(() => setCarouselImage(carouselIndex + 1), 4000);
+  }
+}
+function stopCarousel(){
+  if(carouselTimer){ clearInterval(carouselTimer); carouselTimer = null; }
+}
+mImg.parentElement.addEventListener('mouseenter', stopCarousel);
+mImg.parentElement.addEventListener('mouseleave', startCarousel);
+
+function fillModal(p){
+  mTag.textContent = p.catLabel;
+  mTitle.textContent = p.title;
+  const metaLine = [p.role, p.location, p.years].filter(Boolean).join(' · ');
+  mMeta.textContent = metaLine;
+  mMeta.style.display = metaLine ? 'block' : 'none';
+
+  if(p.headline){
+    mHeadline.textContent = p.headline;
+    mHeadline.style.display = 'block';
+  } else {
+    mHeadline.style.display = 'none';
+  }
+
+  mDesc.innerHTML = p.desc.map(d => '<p>' + d + '</p>').join('');
+  mTags.innerHTML = (p.tags || []).map(t => '<span>' + t + '</span>').join('');
+
+  const videos = p.videos || [];
+  mHeroVideo.innerHTML = '';
+  if(videos.length > 0){
+    mHeroVideo.appendChild(makeIframe(videos[0]));
+    mHeroVideo.style.display = 'block';
+  } else {
+    mHeroVideo.style.display = 'none';
+  }
+  mVideos.innerHTML = '';
+  videos.slice(1).forEach(v => {
+    const wrap = document.createElement('div');
+    wrap.className = 'vwrap';
+    wrap.appendChild(makeIframe(v));
+    mVideos.appendChild(wrap);
+  });
+
+  carouselImages = p.images;
+  carouselIndex = 0;
+  mImg.src = carouselImages[0];
+  mImg.alt = p.title;
+  mThumbs.innerHTML = '';
+  if(p.images.length > 1){
+    p.images.forEach((src, i) => {
+      const t = document.createElement('img');
+      t.src = src;
+      t.className = i === 0 ? 'active' : '';
+      t.addEventListener('click', () => { stopCarousel(); setCarouselImage(i); startCarousel(); });
+      mThumbs.appendChild(t);
+    });
+  }
+  startCarousel();
+
+  if(p.sections && p.sections.length){
+    mPresentedWrap.style.display = 'block';
+    mPresentedWrap.innerHTML = p.sections.map(sec =>
+      '<div class="p-section"><h3>' + sec.title + '</h3><ul>' +
+      sec.items.map(x => '<li>' + x + '</li>').join('') +
+      '</ul></div>'
+    ).join('');
+  } else if(p.presented && p.presented.length){
+    mPresentedWrap.style.display = 'block';
+    mPresentedWrap.innerHTML = '<div class="p-section"><h3>Presented at</h3><ul>' +
+      p.presented.map(x => '<li>' + x + '</li>').join('') + '</ul></div>';
+  } else {
+    mPresentedWrap.style.display = 'none';
+  }
+}
+function openModal(p){
+  currentIndex = projects.findIndex(x => x.id === p.id);
+  fillModal(p);
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  triggerFlash();
+}
+function closeModal(){
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+  mVideos.innerHTML = '';
+  mHeroVideo.innerHTML = '';
+  stopCarousel();
+  if(thumbShuffleTimer){ clearInterval(thumbShuffleTimer); thumbShuffleTimer = null; }
+}
+function showStep(delta){
+  currentIndex = (currentIndex + delta + projects.length) % projects.length;
+  fillModal(projects[currentIndex]);
+  modal.classList.remove('glitching');
+  void modal.offsetWidth;
+  modal.classList.add('glitching');
+  triggerFlash();
+}
+document.getElementById('closeBtn').addEventListener('click', closeModal);
+document.getElementById('prevBtn').addEventListener('click', () => showStep(-1));
+document.getElementById('nextBtn').addEventListener('click', () => showStep(1));
+overlay.addEventListener('click', e => { if(e.target === overlay) closeModal(); });
+document.addEventListener('keydown', e => {
+  if(!overlay.classList.contains('open')) return;
+  if(e.key === 'Escape') closeModal();
+  if(e.key === 'ArrowRight') showStep(1);
+  if(e.key === 'ArrowLeft') showStep(-1);
+});
+function triggerFlash(){
+  flash.classList.remove('hit');
+  void flash.offsetWidth;
+  flash.classList.add('hit');
+}
+
+const aura = document.getElementById('aura');
+let auraX = window.innerWidth/2, auraY = 300, targetX = auraX, targetY = auraY;
+window.addEventListener('pointermove', e => { targetX = e.clientX; targetY = e.clientY + window.scrollY; });
+function tick(){
+  auraX += (targetX - auraX) * 0.08;
+  auraY += (targetY - auraY) * 0.08;
+  aura.style.transform = 'translate(' + (auraX - 320) + 'px,' + (auraY - 320 - window.scrollY) + 'px)';
+  requestAnimationFrame(tick);
+}
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!reduceMotion){
+  requestAnimationFrame(tick);
+} else {
+  aura.style.display = 'none';
+}
+
+const glitchTitle = document.getElementById('glitchTitle');
+const kicker = document.querySelector('.kicker');
+
+const glitchBars = [];
+for(let i = 0; i < 4; i++){
+  const bar = document.createElement('div');
+  bar.className = 'glitch-bar';
+  bar.style.background = i % 2 === 0 ? 'var(--pink)' : 'var(--blue)';
+  document.body.appendChild(bar);
+  glitchBars.push(bar);
+}
+function fireGlitchBars(){
+  const n = 1 + Math.floor(Math.random() * 3);
+  for(let i = 0; i < n; i++){
+    const bar = glitchBars[Math.floor(Math.random() * glitchBars.length)];
+    bar.style.top = (Math.random() * 100) + 'vh';
+    bar.classList.remove('on');
+    void bar.offsetWidth;
+    bar.classList.add('on');
+  }
+}
+
+function ambientGlitch(){
+  glitchTitle.classList.remove('burst');
+  kicker.classList.remove('burst');
+  void glitchTitle.offsetWidth;
+  glitchTitle.classList.add('burst');
+  kicker.classList.add('burst');
+  const allCards = document.querySelectorAll('.card');
+  const n = 2 + Math.floor(Math.random() * 4);
+  for(let i = 0; i < n; i++){
+    const card = allCards[Math.floor(Math.random() * allCards.length)];
+    card.classList.remove('idle-glitch');
+    void card.offsetWidth;
+    card.classList.add('idle-glitch');
+  }
+  if(Math.random() < 0.4) triggerFlash();
+  fireGlitchBars();
+  const next = 2200 + Math.random() * 3200;
+  setTimeout(ambientGlitch, next);
+}
+if(!reduceMotion){
+  setTimeout(ambientGlitch, 1400);
+}
+
+function cardChaos(){
+  const cards = [...document.querySelectorAll('.card')].filter(c => !c.classList.contains('dragging'));
+  const n = 2 + Math.floor(Math.random() * 2);
+  const chosen = [];
+  while(chosen.length < n && chosen.length < cards.length){
+    const c = cards[Math.floor(Math.random() * cards.length)];
+    if(!chosen.includes(c)) chosen.push(c);
+  }
+  chosen.forEach(card => {
+    card.classList.remove('shatter');
+    void card.offsetWidth;
+    card.classList.add('shatter');
+  });
+  setTimeout(() => {
+    chosen.forEach(card => {
+      const baseW = parseFloat(card.dataset.basew) || 420;
+      const factor = 0.95 + Math.random() * 0.35;
+      const newW = Math.max(baseW * 0.9, Math.min(560, Math.round(baseW * factor)));
+      card.style.setProperty('--w', newW + 'px');
+      const curLeft = parseFloat(card.style.left) || 10;
+      const curTop = parseFloat(card.style.top) || 100;
+      const newLeft = Math.max(0, Math.min(78, curLeft + (Math.random() * 22 - 11)));
+      const newTop = curTop + (Math.random() * 160 - 80);
+      card.style.left = newLeft + '%';
+      card.style.top = newTop + 'px';
+      card.classList.remove('shatter');
+    });
+  }, 420);
+  const next = 1800 + Math.random() * 900;
+  setTimeout(cardChaos, next);
+}
+if(!reduceMotion){
+  setTimeout(cardChaos, 3200);
+}
+</script>
+
+</body>
+</html>
